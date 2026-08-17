@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model UserProfile {
+  id                 String   @id @default(cuid())
+  name               String
+  location           String?
+  headline           String
+  bio                String
+  eyebrow            String
+  availability       String?
+  currentlyBuilding  String?
+  stackLabel         String?
+  profileImage       String?
+  heroVideoUrl       String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Experience {
+  id           String   @id @default(cuid())
+  company      String
+  role         String
+  startDate    String
+  endDate      String
+  highlights   String[]
+  technologies String[]
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+model Project {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  tag           String
+  startDate     String
+  endDate       String
+  description   String
+  highlights    String[]
+  technologies  String[]
+  imageUrl      String?
+  projectUrl    String?
+  pipeline      String[]
+  architecture  Json
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+model Skill {
+  id        String   @id @default(cuid())
+  name      String
+  category  String
+  related   String[]
+  sortOrder Int      @default(0)
+
+  @@index([category])
+}
+
+model Publication {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  url         String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Education {
+  id          String   @id @default(cuid())
+  institution String
+  degree      String
+  detail      String?
+  startDate   String
+  endDate     String
+  sortOrder   Int      @default(0)
+}
+
+model SocialLink {
+  id        String  @id @default(cuid())
+  platform  String
+  label     String
+  url       String?
+  sortOrder Int     @default(0)
+}
+
+model PortfolioKnowledge {
+  id         String   @id @default(cuid())
+  category   String
+  title      String
+  content    String
+  keywords   String[]
+  sourceType String
+  sourceId   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([category])
+  @@index([sourceType])
+}
+
+model ContactMessage {
+  id             String   @id @default(cuid())
+  name           String
+  email          String
+  company        String?
+  lookingToBuild String?
+  message        String
+  createdAt      DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([email])
+}
+
+model ChatSession {
+  id           String        @id @default(cuid())
+  sessionToken String        @unique
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  messages     ChatMessage[]
+
+  @@index([createdAt])
+}
+
+model ChatMessage {
+  id        String      @id @default(cuid())
+  sessionId String
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      String
+  content   String
+  createdAt DateTime    @default(now())
+
+  @@index([sessionId, createdAt])
+}
