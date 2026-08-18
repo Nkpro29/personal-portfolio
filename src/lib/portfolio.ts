@@ -142,7 +142,7 @@ export const portfolio: Portfolio = {
     "CLOUD INFRASTRUCTURE",
     "OBSERVABILITY",
   ],
-  heroPoster: "/media/hero-poster.png",
+  heroPoster: "/media/hero-portrait.png",
   heroVideoUrl: heroVideo || null,
   nav: [
     { href: "#work", label: "Work" },

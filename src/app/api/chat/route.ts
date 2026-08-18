@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "Enter a question about Naman's work." }, { status: 400 });
   }
 
-  const sessionToken = parsed.data.sessionToken || randomUUID();
+  const sessionToken = parsed.data.sessionId || parsed.data.sessionToken || randomUUID();
   const question = parsed.data.message;
   const { items, offTopic } = await retrieveRelevantKnowledge(question);
   const prompt = buildUserPrompt(question, items);

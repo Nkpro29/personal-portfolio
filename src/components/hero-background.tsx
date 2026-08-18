@@ -162,14 +162,6 @@ export function HeroBackground() {
 
   return (
     <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-      <Image
-        src={portfolio.heroPoster}
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover opacity-45"
-      />
       {videoUrl ? (
         <video
           className="absolute inset-0 h-full w-full object-cover opacity-40"
@@ -182,11 +174,22 @@ export function HeroBackground() {
         >
           <source src={videoUrl} type="video/mp4" />
         </video>
-      ) : (
-        <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
-      )}
-      <div className="absolute inset-0 bg-linear-to-b from-bg/70 via-bg/55 to-bg" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(5,5,6,0.55)_70%)]" />
+      ) : null}
+      <Image
+        src={portfolio.heroPoster}
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        // Keep the portrait crisp while allowing the overlays to carry the mood.
+        className="object-cover object-[240%_35%] opacity-[0.94]"
+      />
+      {/* Dark editorial treatment with stronger contrast where the copy sits. */}
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,4,8,0.86)_0%,rgba(5,8,13,0.68)_34%,rgba(8,10,14,0.34)_66%,rgba(6,8,12,0.52)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.36)_0%,rgba(0,0,0,0.14)_22%,rgba(0,0,0,0.08)_46%,rgba(3,4,6,0.74)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_0%,rgba(0,0,0,0.24)_58%,rgba(0,0,0,0.66)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(700px_420px_at_18%_24%,rgba(18,42,48,0.22),transparent_60%),radial-gradient(760px_500px_at_86%_16%,rgba(142,117,73,0.16),transparent_52%)] opacity-85" />
+      <div className="absolute inset-x-0 top-0 h-36 bg-[linear-gradient(180deg,rgba(4,6,9,0.45)_0%,rgba(4,6,9,0)_100%)]" />
     </div>
   );
 }

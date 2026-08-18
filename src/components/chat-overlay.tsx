@@ -2,13 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import type { ChatMessage } from "@/lib/chat";
+import { cn } from "@/lib/utils";
 
-export type ChatTurn = {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  streaming?: boolean;
-};
+export type ChatTurn = ChatMessage;
 
 export function ChatOverlay({
   turns,
@@ -16,12 +13,16 @@ export function ChatOverlay({
   reduce,
   onClose,
   composer,
+  voicePanel,
+  voiceActive,
 }: {
-  turns: ChatTurn[];
+  turns: ChatMessage[];
   pending: boolean;
   reduce: boolean;
   onClose: () => void;
   composer: React.ReactNode;
+  voicePanel?: React.ReactNode;
+  voiceActive?: boolean;
 }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -50,7 +51,12 @@ export function ChatOverlay({
         aria-modal="true"
         aria-labelledby="ask-naman-title"
         tabIndex={-1}
-        className="flex h-[92svh] w-full max-w-2xl flex-col border-t border-line bg-surface/90 sm:h-[min(72vh,720px)] sm:rounded-2xl sm:border"
+        className={cn(
+          "flex w-full max-w-2xl flex-col border-t border-line bg-surface/90",
+          voiceActive
+            ? "h-[min(92svh,720px)] rounded-t-3xl sm:h-[min(76vh,760px)] sm:rounded-2xl sm:border"
+            : "h-[92svh] sm:h-[min(72vh,720px)] sm:rounded-2xl sm:border",
+        )}
         initial={reduce ? false : { opacity: 0, y: 28 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 16 }}
@@ -62,7 +68,9 @@ export function ChatOverlay({
             <p id="ask-naman-title" className="font-mono text-[11px] tracking-[0.22em] text-ink-faint uppercase">
               Ask Naman
             </p>
-            <p className="mt-1 text-sm text-ink-muted">Portfolio command interface</p>
+            <p className="mt-1 text-sm text-ink-muted">
+              {voiceActive ? "Voice conversation" : "Portfolio command interface"}
+            </p>
           </div>
           <button
             type="button"
@@ -74,10 +82,15 @@ export function ChatOverlay({
         </div>
 
         <div ref={scrollerRef} className="min-h-0 flex-1 space-y-6 overflow-y-auto px-5 py-6">
+          {turns.length === 0 && (
+            <p className="text-sm text-ink-faint">
+              {voiceActive ? "Ask me about Naman..." : "Ask anything about Naman's work."}
+            </p>
+          )}
           {turns.map((turn) => (
             <div key={turn.id} className="max-w-xl">
               <p className="font-mono text-[10px] tracking-[0.22em] text-ink-faint uppercase">
-                {turn.role === "user" ? "You" : "Naman / AI"}
+                {turn.role === "user" ? "You" : "Naman AI"}
               </p>
               <p className="mt-2 text-[15px] leading-7 text-ink-soft">
                 {turn.content || (turn.streaming ? "" : "…")}
@@ -95,7 +108,9 @@ export function ChatOverlay({
           )}
         </div>
 
-        <div className="border-t border-line p-4">{composer}</div>
+        <div className={cn("border-t border-line", voiceActive ? "p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]" : "p-4")}>
+          {voiceActive && voicePanel ? voicePanel : composer}
+        </div>
       </motion.div>
     </motion.div>
   );

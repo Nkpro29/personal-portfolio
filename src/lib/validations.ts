@@ -16,5 +16,10 @@ export type ContactInput = z.infer<typeof contactSchema>;
 
 export const chatRequestSchema = z.object({
   message: z.string().trim().min(1, "Enter a question.").max(2000),
+  sessionId: z.string().trim().min(8).max(128).optional(),
   sessionToken: z.string().trim().min(8).max(128).optional(),
+});
+
+export const speechRequestSchema = z.object({
+  text: z.string().trim().min(1, "Enter text to speak.").max(4000),
 });
